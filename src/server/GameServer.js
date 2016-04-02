@@ -1,14 +1,37 @@
 'use strict';
 
-var http = require('http');
-import RequestManager from './RequestManager.js';
+var express = require('express');
+
+import _ from 'lodash';
+import extend from 'extend';
 
 const PORT = 8080;
 
+function loadModules(server, modules) {
+  _.forEach(modules, module => {
+
+    server.get('/' + module.name, module.get);
+    server.post('/' + module.name, module.post);
+    server.put('/' + module.name, module.put);
+    server.del('/' + module.name, module.delete);
+  });
+}
+
 export default class {
-  start() {
-    var requestManager = new RequestManager();
-    var server = http.createServer(requestManager.handleRequest);
-    server.listen(PORT, () => console.log('listening...'));
+  constructor() {}
+
+  start(modules) {
+    if (!modules || modules.length <= 0) {
+      throw new Error('No modules supplied, I cannot work without modules!');
+    }
+
+    var server = express();
+
+    loadModules(server, modules);
+
+    var server = server.listen(PORT, function() {
+      console.log('Never dull server running...');
+
+    })
   }
 }
