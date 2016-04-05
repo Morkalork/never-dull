@@ -1,13 +1,13 @@
 'use strict';
 
 /**
- *	This module is only meant to be a template for new modules. Feel free to copy it
- *	and use it as a template.
+ *  This module is only meant to be a template for new modules. Feel free to copy it
+ *  and use it as a template.
  */
 export class IChallange {
 
   /****************************************
-   *	PROPERTIES
+   *  PROPERTIES
    ***************************************/
 
   /** 
@@ -39,7 +39,7 @@ export class IChallange {
 
 
   /****************************************
-   *	METHODS
+   *  METHODS
    ***************************************/
 
   /**
@@ -48,7 +48,7 @@ export class IChallange {
    *    @param {object} request - A http request object with the player data
    *    @param {object} response - A http response object to communicate back to the player
    */
-  get(request, response) // Handle incoming requests and write to the response stream
+  get(request, response) {}
 
   /**
    *    Handle post requests
@@ -56,7 +56,7 @@ export class IChallange {
    *    @param {object} request - A http request object with the player data
    *    @param {object} response - A http response object to communicate back to the player
    */
-  post(request, response)
+  post(request, response) {}
 
   /**
    *    Handle put requests
@@ -64,7 +64,7 @@ export class IChallange {
    *    @param {object} request - A http request object with the player data
    *    @param {object} response - A http response object to communicate back to the player
    */
-  put(request, response)
+  put(request, response) {}
 
   /**
    *    Handle delete requests
@@ -72,5 +72,5 @@ export class IChallange {
    *    @param {object} request - A http request object with the player data
    *    @param {object} response - A http response object to communicate back to the player
    */
-  delete(request, response)
+  delete(request, response) {}
 }

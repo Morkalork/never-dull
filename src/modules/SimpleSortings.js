@@ -33,30 +33,37 @@ export default class {
   }
 
   get name() {
-    return 'Simple Sorting';
+    return 'simple-sorting';
   }
 
   get description() {
-    return '**Simple Sorter** is a module that will require you to sort a large set of numbers ' +
-      'and return them in a nice ordered fashion.\n' +
-      'Collect the numbers from below and return them in a put request to this module. ' +
+    return '# Description\n' +
+      '**Simple Sorter** is a module that will require you to sort a large set of numbers ' +
+      'and return them in a nice ordered fashion.';
+  }
+
+  get instructions() {
+    return '# Instructions\n' +
+      'Collect the numbers from below and return them in a put request to this module.\n ' +
       'You will get a response that tells you whether you succeeded or failed. \n\n' +
       ' > ' + this.numbers.join(', ');
   }
 
-  get instructions() {}
+  get difficulty() {
+    return 1;
+  }
 
-  get difficulty() {}
-
-  get type() {}
+  get type() {
+    return 'Sorting';
+  }
 
   get(request, response) {
-    response.send('I don\'t do very much...');
+    response.send(this.description() + '\n\n' + this.instructions());
   }
 
   post(request, response) {
     // This is the only valid request in this module
-    console.log(req.body);
+    console.log(request.body);
   }
 
   put(request, response) {
