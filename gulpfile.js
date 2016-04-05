@@ -1,10 +1,13 @@
 var gulp = require('gulp');
-var babel = require('gulp-babel');
+var babel = require('rollup-plugin-babel');
+var rollup = require('gulp-rollup');
 
-gulp.task('js', () => {
-  return gulp.src(['src/**/*.js', '!src/template-module.js'])
-    .pipe(babel())
-    .pipe(gulp.dest('build'));
+gulp.task('rollup', () => {
+  return gulp.src('src/index.js', { read: false })
+    .pipe(rollup({
+      plugins: [babel()]
+    }))
+    .pipe(gulp.dest('dist/rollup'));
 });
 
-gulp.task('default', ['js']);
+gulp.task('default', ['rollup']);

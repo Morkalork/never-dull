@@ -2,10 +2,10 @@
 
 var express = require('express');
 
-import _ from 'lodash';
-import extend from 'extend';
-import bodyParser from 'body-parser';
-import multer from 'multer';
+var _ = require('lodash');
+var extend = require('extend');
+var bodyParser = require('body-parser');
+var multer = require('multer');
 
 function loadModules(server, modules) {
 

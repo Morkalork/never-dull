@@ -1,12 +1,16 @@
 'use strict';
 
-import SimpleSorting from './simple-sorting';
-import { NeverDullServer } from './server';
+//var SimpleSortings = require('./plugins/SimpleSortings.js');
+//var NeverDullServer = require('./server');
 
-export function getDefaultModules() {
-  return [
-    new SimpleSorting()
-  ];
+import SimpleSortings from './plugins/SimpleSortings';
+import { NeverDullServer } from './server/index.js';
+
+module.exports = {
+  Server: NeverDullServer,
+  getDefaultModules: function() {
+    return [
+      new SimpleSortings()
+    ];
+  }
 }
-
-export { NeverDullServer as Server };

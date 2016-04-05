@@ -1,6 +1,6 @@
 'use strict';
 
-import random from 'random-number';
+var random = require('random-number');
 
 function generateNumbers() {
   var numbers = [];
@@ -33,7 +33,7 @@ export default class {
   }
 
   get name() {
-    return 'simple-sorting';
+    return 'Simple Sorting';
   }
 
   get description() {
