@@ -1,36 +1,10 @@
 var gulp = require('gulp');
-var sourcemaps = require('gulp-sourcemaps');
-var source = require('vinyl-source-stream');
-var buffer = require('vinyl-buffer');
-var browserify = require('browserify');
-var babel = require('babelify');
+var babel = require('gulp-babel');
 
-function compile() {
-  var bundler = browserify(
-      './src/index.js', {
-        debug: true
-      })
-    .exclude('http')
-    .transform(babel);
-
-  function rebundle() {
-    bundler.bundle()
-      .on('error', function(err) {
-        console.error(err);
-        this.emit('end');
-      })
-      .pipe(source('build.js'))
-      .pipe(buffer())
-      .pipe(sourcemaps.init({ loadMaps: true }))
-      .pipe(sourcemaps.write('./'))
-      .pipe(gulp.dest('./build'));
-  }
-
-  return rebundle();
-}
-
-gulp.task('build', function() {
-  return compile();
+gulp.task('js', () => {
+  return gulp.src(['src/**/*.js', '!src/template-module.js'])
+    .pipe(babel())
+    .pipe(gulp.dest('build'));
 });
 
-gulp.task('default', ['build']);
+gulp.task('default', ['js']);
