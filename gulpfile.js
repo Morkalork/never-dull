@@ -1,13 +1,55 @@
 var gulp = require('gulp');
 var babel = require('rollup-plugin-babel');
 var rollup = require('gulp-rollup');
+var less = require('gulp-less');
+var browserify = require('browserify');
+var babelify = require('babelify');
+var source = require('vinyl-source-stream');
+var buffer = require('vinyl-buffer');
+var uglify = require('gulp-uglify');
+var sourcemaps = require('gulp-sourcemaps');
 
 gulp.task('rollup', () => {
   return gulp.src('src/index.js', { read: false })
     .pipe(rollup({
       plugins: [babel()]
     }))
-    .pipe(gulp.dest('dist/rollup'));
+    .pipe(gulp.dest('public/'));
 });
 
-gulp.task('default', ['rollup']);
+gulp.task('views', () => {
+  return gulp.src('src/front/**/*.html')
+    .pipe(gulp.dest('public/front'));
+});
+
+gulp.task('css', () => {
+  return gulp.src('src/front/**/*.less')
+    .pipe(less())
+    .pipe(gulp.dest('public/front'));
+});
+
+function browserifyFile(file, dest) {
+  // set up the browserify instance on a task basis
+  var b = browserify({
+    entries: file,
+    debug: true,
+    transform: [babelify]
+  });
+
+  return b.bundle()
+    .pipe(source('app.js'))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    // Add transformation tasks to the pipeline here.
+    .pipe(uglify())
+    .on('error', e => console.error(e))
+    .pipe(sourcemaps.write('./'))
+    .pipe(gulp.dest(dest));
+}
+
+gulp.task('js', () => {
+  browserifyFile('src/front/js/main/index.js', 'public/front/js/main');
+  // browserifyFile('src/front/js/admin/index.js', 'public/front/js/admin');
+});
+
+gulp.task('default', ['rollup', 'views', 'css', 'js']);

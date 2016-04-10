@@ -1,13 +1,14 @@
 'use strict';
 
 var express = require('express');
+var path = require('path');
 
 var _ = require('lodash');
 var extend = require('extend');
 var bodyParser = require('body-parser');
 var multer = require('multer');
 
-import buildWelcomeRoute from './buildWelcomeRoute';
+import addDefaultRoutes from './addDefaultRoutes';
 
 function loadModules(server, moduleNodes) {
 
@@ -32,6 +33,20 @@ function loadModules(server, moduleNodes) {
   });
 }
 
+function setStaticContentPaths(server) {
+  var jsPath = path.join(__dirname, '/front/js');
+  var cssPath = path.join(__dirname, '/front/css');
+  var image = path.join(__dirname, '/front/image');
+
+  server.use('/js', express.static(jsPath));
+  server.use('/css', express.static(jsPath));
+  server.use('/images', express.static(jsPath));
+}
+
+/**
+ *  This is the main server. This will let you launch a new game with a bunch of
+ *  module nodes.
+ */
 export default class {
   constructor(port) {
     this.port = port || 8080;
@@ -45,18 +60,27 @@ export default class {
     this.startPage = val;
   }
 
+  /**
+   *  Launch a new game based on whatever nodes you've selected.
+   *  The nodes can create multiple paths of designed correctly and may contain various
+   *  paths that the consumers may chose.
+   *
+   *  @param {object[]} moduleNodes - An array of module nodes
+   */
   launch(moduleNodes) {
     if (!moduleNodes || moduleNodes.length <= 0) {
       throw new Error('No modules supplied, I cannot work without modules!');
     }
 
     var server = express();
-    buildWelcomeRoute(server, moduleNodes);
+    setStaticContentPaths(server);
+
+    addDefaultRoutes(server, moduleNodes);
     loadModules(server, moduleNodes);
 
     var listener = server.listen(this.port, function(e) {
       var addressInfo = listener.address();
-      console.log('Never dull server running on "http://localhost:' + addressInfo.port + '"');
+      console.log('Never dull server running on "http://localhost:' + addressInfo.port);
     });
   }
 }

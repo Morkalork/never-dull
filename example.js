@@ -1,4 +1,5 @@
-var neverDull = require('../dist/rollup/index.js');
+var neverDull = require('./public/index.js');
+var path = require('path');
 
 var server = new neverDull.Server();
 var defaultModules = neverDull.getDefaultModules();
