@@ -45,6 +45,8 @@
     "lodash": "^4.1.0",
     "multer": "^1.1.0",
     "nedb": "^1.8.0",
-    "random-number": "0.0.7"
+    "random-number": "0.0.7",
+    "simple-ajax": "^2.5.0",
+    "snapsvg": "^0.4.0"
   }
 }

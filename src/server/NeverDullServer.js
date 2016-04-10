@@ -11,11 +11,11 @@ import loadChallanges from './helpers/loadChallanges';
 function setStaticContentPaths(server) {
   var jsPath = path.join(__dirname, '/front/js');
   var cssPath = path.join(__dirname, '/front/css');
-  var image = path.join(__dirname, '/front/image');
+  var assetPath = path.join(__dirname, '/front/assets');
 
   server.use('/js', express.static(jsPath));
-  server.use('/css', express.static(jsPath));
-  server.use('/images', express.static(jsPath));
+  server.use('/css', express.static(cssPath));
+  server.use('/assets', express.static(assetPath));
 }
 
 /**

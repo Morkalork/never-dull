@@ -28,6 +28,11 @@ gulp.task('css', () => {
     .pipe(gulp.dest('public/front'));
 });
 
+gulp.task('assets', () => {
+  return gulp.src(['src/front/assets/**/*.jpg', 'src/front/assets/**/*.png'])
+    .pipe(gulp.dest('public/front/assets'));
+});
+
 function browserifyFile(file, dest) {
   // set up the browserify instance on a task basis
   var b = browserify({
@@ -52,4 +57,4 @@ gulp.task('js', () => {
   // browserifyFile('src/front/js/admin/index.js', 'public/front/js/admin');
 });
 
-gulp.task('default', ['rollup', 'views', 'css', 'js']);
+gulp.task('default', ['rollup', 'assets', 'views', 'css', 'js']);

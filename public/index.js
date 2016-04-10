@@ -373,9 +373,7 @@ var _ = require('lodash');
 
 function persistChallanges (challanges, db) {
   db.getAllChallanges().then(function (existingChallanges) {
-    console.log('Found ' + existingChallanges.length + ' challanges!');
     _.forEach(challanges, function (challange) {
-      console.log('Trying to insert challange ' + challange.module.name);
       var exists = _.some(existingChallanges, function (x) {
         return x.name === challange.module.name;
       });
@@ -431,11 +429,11 @@ var path = require('path');
 function setStaticContentPaths(server) {
   var jsPath = path.join(__dirname, '/front/js');
   var cssPath = path.join(__dirname, '/front/css');
-  var image = path.join(__dirname, '/front/image');
+  var assetPath = path.join(__dirname, '/front/assets');
 
   server.use('/js', express.static(jsPath));
-  server.use('/css', express.static(jsPath));
-  server.use('/images', express.static(jsPath));
+  server.use('/css', express.static(cssPath));
+  server.use('/assets', express.static(assetPath));
 }
 
 /**
