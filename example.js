@@ -5,16 +5,15 @@ var server = new neverDull.Server();
 var defaultModules = neverDull.getDefaultModules();
 
 var moduleNodes = [];
-var simpleSortingsModuleNode = neverDull.buildModuleNode(
+var simpleSortingsModuleNode = neverDull.buildChallange(
   defaultModules.SimpleSortings,
-  null, // First module
-  defaultModules.SimpleReversing);
+  null // First module
+  );
 moduleNodes.push(simpleSortingsModuleNode);
 
-var simpleReversingModuleNode = neverDull.buildModuleNode(
+var simpleReversingModuleNode = neverDull.buildChallange(
   defaultModules.SimpleReversing,
-  defaultModules.SimpleSortings,
-  null); // Last module
+  defaultModules.SimpleSortings); // Last module
 moduleNodes.push(simpleReversingModuleNode);
 
 server.launch(moduleNodes);

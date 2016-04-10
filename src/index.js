@@ -6,7 +6,7 @@
 import SimpleSortings from './modules/SimpleSortings';
 import SimpleReversing from './modules/SimpleReversing';
 import NeverDullServer from './server/NeverDullServer.js';
-import ModuleNode from './helpers/ModuleNode';
+import Challange from './helpers/Challange';
 
 module.exports = {
   Server: NeverDullServer,
@@ -16,7 +16,7 @@ module.exports = {
       SimpleReversing: new SimpleReversing()
     };
   },
-  buildModuleNode: function(module, parent, children) {
-    return new ModuleNode(module, parent, children);
+  buildChallange: function(module, parent, children) {
+    return new Challange(module, parent, children);
   }
 }

@@ -270,7 +270,82 @@ var _class$1 = function () {
   return _class;
 }();
 
+var Datastore = require('nedb');
+
+var _class$3 = function () {
+  function _class() {
+    babelHelpers.classCallCheck(this, _class);
+
+    // Challanges
+
+    this.db = {};
+    this.db.challanges = new Datastore({
+      filename: 'db/challanges.db',
+      autoload: true
+    });
+
+    // Users
+    this.db.users = new Datastore({
+      filename: 'db/users.db',
+      autoload: true
+    });
+
+    // Results
+    this.db.results = new Datastore({
+      filename: 'db/results.db',
+      autoload: true
+    });
+  }
+
+  babelHelpers.createClass(_class, [{
+    key: 'insertChallange',
+    value: function insertChallange(challange) {
+      var module = challange.module;
+      var doc = {
+        parentId: challange.parent ? challange.parent.name : '',
+        name: module.name,
+        description: module.description,
+        instructions: module.instructions,
+        difficulty: module.difficulty,
+        type: module.type
+      };
+
+      this.db.challanges.insert(doc);
+    }
+  }, {
+    key: 'getChallanges',
+    value: function getChallanges(selector) {
+      var _this = this;
+
+      return new Promise(function (resolve, reject) {
+        _this.db.challanges.find(selector, function (err, docs) {
+          if (err) {
+            reject(err);
+          }
+
+          resolve(docs);
+        });
+      });
+    }
+  }, {
+    key: 'getAllChallanges',
+    value: function getAllChallanges() {
+      return this.getChallanges({});
+    }
+  }, {
+    key: 'getChallangeByName',
+    value: function getChallangeByName(name) {
+      return this.getChallanges({ name: name });
+    }
+  }]);
+  return _class;
+}();
+
 var path$1 = require('path');
+
+function errorHandler(error) {
+  console.log(' -> ERROR: ', error);
+}
 
 function addDefaultRoutes (server, modules) {
 
@@ -278,18 +353,48 @@ function addDefaultRoutes (server, modules) {
     res.sendFile(path$1.join(__dirname + '/front/views/main.html'));
   });
 
-  server.get('/admin', function (req, res) {});
+  server.get('/challanges', function (req, res, next) {
+    var db = new _class$3();
+    db.getAllChallanges().then(function (challanges) {
+      return res.json(challanges);
+    }).catch(errorHandler);
+  });
+
+  server.get('/challange', function (req, res) {
+    var db = new _class$3();
+    var challangeName = req.query.name;
+    db.getChallangeByName(challangeName).then(function (challange) {
+      res.json(challange);
+    }).catch(errorHandler);
+  });
 }
 
-var express = require('express');
-var path = require('path');
-
 var _ = require('lodash');
-var extend = require('extend');
+
+function persistChallanges (challanges, db) {
+  db.getAllChallanges().then(function (existingChallanges) {
+    console.log('Found ' + existingChallanges.length + ' challanges!');
+    _.forEach(challanges, function (challange) {
+      console.log('Trying to insert challange ' + challange.module.name);
+      var exists = _.some(existingChallanges, function (x) {
+        return x.name === challange.module.name;
+      });
+
+      if (exists) {
+        console.log(' -> Challange ' + challange.module.name + ' will not be persisted, ' + 'it already exists.');
+        return;
+      }
+
+      db.insertChallange(challange);
+    });
+  });
+}
+
 var bodyParser = require('body-parser');
 var multer = require('multer');
+var _$1 = require('lodash');
 
-function loadModules(server, moduleNodes) {
+function loadChallanges (server, challanges) {
 
   var upload = multer();
   server.use(bodyParser.json()); // For application/json
@@ -297,8 +402,8 @@ function loadModules(server, moduleNodes) {
     extended: true
   }));
 
-  _.forEach(moduleNodes, function (moduleNode) {
-    var module = moduleNode.module;
+  _$1.forEach(challanges, function (challange) {
+    var module = challange.module;
     console.log(' -> Adding module ' + module.name);
 
     // We need to run the VERB calls in lambdas to avoid fucking up the context.
@@ -320,6 +425,9 @@ function loadModules(server, moduleNodes) {
   });
 }
 
+var express = require('express');
+var path = require('path');
+
 function setStaticContentPaths(server) {
   var jsPath = path.join(__dirname, '/front/js');
   var cssPath = path.join(__dirname, '/front/css');
@@ -340,6 +448,7 @@ var _class$2 = function () {
     babelHelpers.classCallCheck(this, _class);
 
     this.port = port || 8080;
+    this.db = new _class$3();
   }
 
   /**
@@ -357,18 +466,21 @@ var _class$2 = function () {
      *  The nodes can create multiple paths of designed correctly and may contain various
      *  paths that the consumers may chose.
      *
-     *  @param {object[]} moduleNodes - An array of module nodes
+     *  @param {object[]} challanges - An array of challanges (<- good documentation!)
      */
-    value: function launch(moduleNodes) {
-      if (!moduleNodes || moduleNodes.length <= 0) {
+    value: function launch(challanges) {
+      if (!challanges || challanges.length <= 0) {
         throw new Error('No modules supplied, I cannot work without modules!');
       }
+
+      persistChallanges(challanges, this.db);
 
       var server = express();
       setStaticContentPaths(server);
 
-      addDefaultRoutes(server, moduleNodes);
-      loadModules(server, moduleNodes);
+      addDefaultRoutes(server, challanges);
+
+      loadChallanges(server, challanges);
 
       var listener = server.listen(this.port, function (e) {
         var addressInfo = listener.address();
@@ -388,14 +500,13 @@ var _class$2 = function () {
  *	This class represents a node in the module cluster. 
  */
 
-var _class$3 =
+var _class$4 =
 /**
  *	Create a module node
  *
  *	@param {object} module - A Never Dull (ND) module
  *	@param {object} parent - The parent ND module to which this node comes from. It set to
  *	null this node will be considered a starting node.
- *	@param {object[]} children - An array of ND modules to which a successful player
  *	can move after completing the node module.
  */
 function _class(module, parent, children) {
@@ -403,7 +514,6 @@ function _class(module, parent, children) {
 
   this.module = module;
   this.parent = parent;
-  this.children = children;
 };
 
 module.exports = {
@@ -414,7 +524,7 @@ module.exports = {
       SimpleReversing: new _class$1()
     };
   },
-  buildModuleNode: function buildModuleNode(module, parent, children) {
-    return new _class$3(module, parent, children);
+  buildChallange: function buildChallange(module, parent, children) {
+    return new _class$4(module, parent, children);
   }
 };

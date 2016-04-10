@@ -3,35 +3,10 @@
 var express = require('express');
 var path = require('path');
 
-var _ = require('lodash');
-var extend = require('extend');
-var bodyParser = require('body-parser');
-var multer = require('multer');
-
 import addDefaultRoutes from './addDefaultRoutes';
-
-function loadModules(server, moduleNodes) {
-
-  var upload = multer();
-  server.use(bodyParser.json()); // For application/json
-  server.use(bodyParser.urlencoded({ // For parsing urlencoded application
-    extended: true
-  }));
-
-  _.forEach(moduleNodes, moduleNode => {
-    var module = moduleNode.module;
-    console.log(' -> Adding module ' + module.name);
-
-    // We need to run the VERB calls in lambdas to avoid fucking up the context.
-    // Express sets the calling context to something odd when using the callback
-    // and that means the context of the method call is no longer the object of the method.
-    // Using a lambda expression here negates that effect.
-    server.get('/' + module.name, (req, res) => module.get(req, res));
-    server.post('/' + module.name, upload.array(), (req, res) => module.post(req, res));
-    server.put('/' + module.name, (req, res) => module.put(req, res));
-    server.delete('/' + module.name, (req, res) => module.delete(req, res));
-  });
-}
+import DatabaseManager from '../database/DatabaseManager';
+import persistChallanges from './helpers/persistChallanges';
+import loadChallanges from './helpers/loadChallanges';
 
 function setStaticContentPaths(server) {
   var jsPath = path.join(__dirname, '/front/js');
@@ -50,6 +25,7 @@ function setStaticContentPaths(server) {
 export default class {
   constructor(port) {
     this.port = port || 8080;
+    this.db = new DatabaseManager();
   }
 
   /**
@@ -65,18 +41,21 @@ export default class {
    *  The nodes can create multiple paths of designed correctly and may contain various
    *  paths that the consumers may chose.
    *
-   *  @param {object[]} moduleNodes - An array of module nodes
+   *  @param {object[]} challanges - An array of challanges (<- good documentation!)
    */
-  launch(moduleNodes) {
-    if (!moduleNodes || moduleNodes.length <= 0) {
+  launch(challanges) {
+    if (!challanges || challanges.length <= 0) {
       throw new Error('No modules supplied, I cannot work without modules!');
     }
+
+    persistChallanges(challanges, this.db);
 
     var server = express();
     setStaticContentPaths(server);
 
-    addDefaultRoutes(server, moduleNodes);
-    loadModules(server, moduleNodes);
+    addDefaultRoutes(server, challanges);
+
+    loadChallanges(server, challanges);
 
     var listener = server.listen(this.port, function(e) {
       var addressInfo = listener.address();
