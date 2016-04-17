@@ -1,9 +1,10 @@
 'use strict';
 
 var Ajax = require('simple-ajax');
+var createUserInterface = require('./createUserInterface');
+var Plugins = require('../Plugins');
 
-
-function getChallanges() {
+function loadChallanges() {
   var url = '/challanges';
   var request = new Ajax({
     url: url,
@@ -12,14 +13,15 @@ function getChallanges() {
     contentType: 'content/json'
   });
 
-  request.on('success', (e, data) => {
-    console.log(e);
-    console.log(data);
+  request.on('success', (e, challanges) => {
+    createUserInterface(challanges);
   });
 
   request.send();
 }
 
 (function() {
-  getChallanges();
+  Plugins();
+  loadChallanges();
+
 }());

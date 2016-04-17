@@ -37,16 +37,14 @@ function browserifyFile(file, dest) {
   // set up the browserify instance on a task basis
   var b = browserify({
     entries: file,
-    debug: true,
-    transform: [babelify]
+    debug: true
   });
 
-  return b.bundle()
+  return b.transform(babelify)
+    .bundle()
     .pipe(source('app.js'))
     .pipe(buffer())
     .pipe(sourcemaps.init({ loadMaps: true }))
-    // Add transformation tasks to the pipeline here.
-    .pipe(uglify())
     .on('error', e => console.error(e))
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest(dest));
