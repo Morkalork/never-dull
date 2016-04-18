@@ -26424,6 +26424,9 @@ function addChallange(snap, config, challange, parent, startX, startY) {
       fillOpacity: 0.85
     });
   }).click(function () {
+
+    document.getElementById('popup-shade').style.display = 'block';
+
     var popup = document.getElementById('popup');
     var rectBBox = rect.getBBox();
     popup.style.left = rectBBox.cx + "px";
@@ -26431,6 +26434,11 @@ function addChallange(snap, config, challange, parent, startX, startY) {
     popup.style.display = 'block';
 
     console.log(challange);
+    var urlLink = document.getElementById('popup-link');
+    var url = window.location.href + challange.name;
+    url = url.replace('#', ''); // Just in case, y'know...
+    urlLink.setAttribute('href', url);
+    urlLink.innerHTML = url;
     document.getElementById('popup-header').innerHTML = challange.name;
     document.getElementById('popup-description').innerHTML = marked(challange.description);
     document.getElementById('popup-instructions').innerHTML = marked(challange.instructions);
@@ -26477,6 +26485,7 @@ module.exports = function (challanges) {
   //Bind popup close link
   document.getElementById('popup-close-link').addEventListener('click', function () {
     document.getElementById('popup').style.display = 'none';
+    document.getElementById('popup-shade').style.display = 'none';
   });
 
   var config = buildConfig();
