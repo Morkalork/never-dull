@@ -12,9 +12,9 @@ export default class {
       autoload: true
     });
 
-    // Users
-    this.db.users = new Datastore({
-      filename: 'db/users.db',
+    // Teams
+    this.db.teams = new Datastore({
+      filename: 'db/teams.db',
       autoload: true
     });
 
@@ -57,5 +57,40 @@ export default class {
 
   getChallangeByName(name) {
     return this.getChallanges({ name: name });
+  }
+
+  insertTeam(team) {
+    var doc = {
+      name: team.name,
+      currentPosition: team.currentPosition,
+      avatar: team.avatar,
+      points: team.points
+    };
+
+    this.db.teams.insert(doc);
+  }
+
+  updateTeam(id, newTeam) {
+    this.db.update({ _id: id }, newTeam);
+  }
+
+  getTeam(selector) {
+    return new Promise((resolve, reject) => {
+      this.db.teams.find(selector, (err, docs) => {
+        if (err) {
+          reject(err);
+        }
+
+        resolve(docs);
+      });
+    });
+  }
+
+  getTeamByName(name) {
+    return this.getTeam({ name: name });
+  }
+
+  getTeams() {
+    return this.getTeam({});
   }
 }

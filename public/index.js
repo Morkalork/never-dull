@@ -284,9 +284,9 @@ var _class$3 = function () {
       autoload: true
     });
 
-    // Users
-    this.db.users = new Datastore({
-      filename: 'db/users.db',
+    // Teams
+    this.db.teams = new Datastore({
+      filename: 'db/teams.db',
       autoload: true
     });
 
@@ -337,13 +337,55 @@ var _class$3 = function () {
     value: function getChallangeByName(name) {
       return this.getChallanges({ name: name });
     }
+  }, {
+    key: 'insertTeam',
+    value: function insertTeam(team) {
+      var doc = {
+        name: team.name,
+        currentPosition: team.currentPosition,
+        avatar: team.avatar,
+        points: team.points
+      };
+
+      this.db.teams.insert(doc);
+    }
+  }, {
+    key: 'updateTeam',
+    value: function updateTeam(id, newTeam) {
+      this.db.update({ _id: id }, newTeam);
+    }
+  }, {
+    key: 'getTeam',
+    value: function getTeam(selector) {
+      var _this2 = this;
+
+      return new Promise(function (resolve, reject) {
+        _this2.db.teams.find(selector, function (err, docs) {
+          if (err) {
+            reject(err);
+          }
+
+          resolve(docs);
+        });
+      });
+    }
+  }, {
+    key: 'getTeamByName',
+    value: function getTeamByName(name) {
+      return this.getTeam({ name: name });
+    }
+  }, {
+    key: 'getTeams',
+    value: function getTeams() {
+      return this.getTeam({});
+    }
   }]);
   return _class;
 }();
 
 var path$1 = require('path');
-
-function errorHandler(error) {
+var multer = require('multer');
+var upload = multer(); function errorHandler(error) {
   console.log(' -> ERROR: ', error);
 }
 
@@ -367,6 +409,31 @@ function addDefaultRoutes (server, modules) {
       res.json(challange);
     }).catch(errorHandler);
   });
+
+  server.get('/admin', function (req, res) {
+    res.sendFile(path$1.join(__dirname + '/front/views/admin.html'));
+  });
+
+  server.post('/admin/add', upload.array(), function (req, res) {
+    var name = req.body.name;
+    var avatar = req.body.avatar;
+
+    var db = new _class$3();
+    db.insertTeam({
+      name: req.body.name,
+      avatar: req.body.avatar,
+      currentPosition: 0,
+      points: req.body.points
+    });
+  });
+
+  server.get('/admin/teams', function (req, res) {
+    console.log('Get teams!');
+    var db = new _class$3();
+    db.getTeams().then(function (teams) {
+      res.json(teams);
+    }).catch(errorHandler);
+  });
 }
 
 var _ = require('lodash');
@@ -388,15 +455,15 @@ function persistChallanges (challanges, db) {
   });
 }
 
-var bodyParser = require('body-parser');
-var multer = require('multer');
+var bodyParser$1 = require('body-parser');
+var multer$1 = require('multer');
 var _$1 = require('lodash');
 
 function loadChallanges (server, challanges) {
 
-  var upload = multer();
-  server.use(bodyParser.json()); // For application/json
-  server.use(bodyParser.urlencoded({ // For parsing urlencoded application
+  var upload = multer$1();
+  server.use(bodyParser$1.json()); // For application/json
+  server.use(bodyParser$1.urlencoded({ // For parsing urlencoded application
     extended: true
   }));
 
@@ -425,6 +492,8 @@ function loadChallanges (server, challanges) {
 
 var express = require('express');
 var path = require('path');
+
+var bodyParser = require('body-parser');
 
 function setStaticContentPaths(server) {
   var jsPath = path.join(__dirname, '/front/js');
@@ -474,6 +543,8 @@ var _class$2 = function () {
       persistChallanges(challanges, this.db);
 
       var server = express();
+      server.use(bodyParser.json());
+      server.use(bodyParser.urlencoded({ extended: true }));
       setStaticContentPaths(server);
 
       addDefaultRoutes(server, challanges);

@@ -3,6 +3,8 @@
 var express = require('express');
 var path = require('path');
 
+var bodyParser = require('body-parser');
+
 import addDefaultRoutes from './addDefaultRoutes';
 import DatabaseManager from '../database/DatabaseManager';
 import persistChallanges from './helpers/persistChallanges';
@@ -51,6 +53,8 @@ export default class {
     persistChallanges(challanges, this.db);
 
     var server = express();
+    server.use(bodyParser.json());
+    server.use(bodyParser.urlencoded({ extended: true }));
     setStaticContentPaths(server);
 
     addDefaultRoutes(server, challanges);

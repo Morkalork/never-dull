@@ -26433,7 +26433,6 @@ function addChallange(snap, config, challange, parent, startX, startY) {
     popup.style.top = rectBBox.cy + "px";
     popup.style.display = 'block';
 
-    console.log(challange);
     var urlLink = document.getElementById('popup-link');
     var url = window.location.href + challange.name;
     url = url.replace('#', ''); // Just in case, y'know...

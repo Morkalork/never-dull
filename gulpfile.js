@@ -51,8 +51,13 @@ function browserifyFile(file, dest) {
 }
 
 gulp.task('js', () => {
-  browserifyFile('src/front/js/main/index.js', 'public/front/js/main');
-  // browserifyFile('src/front/js/admin/index.js', 'public/front/js/admin');
+  browserifyFile(
+    'src/front/js/main/index.js',
+    'public/front/js/main');
+
+  browserifyFile(
+    'src/front/js/admin/index.js',
+    'public/front/js/admin');
 });
 
 gulp.task('default', ['rollup', 'assets', 'views', 'css', 'js']);
