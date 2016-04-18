@@ -2,6 +2,7 @@
 
 var Snap = require('snapsvg');
 var _ = require('lodash');
+var marked = require('marked');
 
 function buildConfig() {
   var mainArea = document.getElementById('main-area');
@@ -97,8 +98,34 @@ function addChallange(snap, config, challange, parent, startX, startY) {
     .attr({
       stroke: '#000',
       strokeWidth: config.borderWidth,
-      fill: '#FFF'
+      strokeOpacity: 0.5,
+      fill: '#FFF',
+      fillOpacity: 0.95,
+      cursor: 'pointer'
     });
+
+  rect.hover(() => {
+    rect.attr({
+      strokeOpacity: 0.9,
+      fillOpacity: 1
+    });
+  }, () => {
+    rect.attr({
+      strokeOpacity: 0.5,
+      fillOpacity: 0.85
+    });
+  }).click(() => {
+    var popup = document.getElementById('popup');
+    var rectBBox = rect.getBBox();
+    popup.style.left = rectBBox.cx + "px";
+    popup.style.top = rectBBox.cy + "px";
+    popup.style.display = 'block';
+
+    console.log(challange);
+    document.getElementById('popup-header').innerHTML = challange.name;
+    document.getElementById('popup-description').innerHTML = marked(challange.description);
+    document.getElementById('popup-instructions').innerHTML = marked(challange.instructions);
+  });
 
   config.elements.rectangles.push(rect);
   addTextToRectangle(snap, config, rect, challange.name);
@@ -144,6 +171,12 @@ function addChallanges(snap, config, challanges, parent, yLevel) {
 }
 
 module.exports = function(challanges) {
+
+  //Bind popup close link
+  document.getElementById('popup-close-link').addEventListener('click', () => {
+    document.getElementById('popup').style.display = 'none';
+  });
+
   var config = buildConfig();
   config.challanges = challanges;
   var snap = Snap('#main-area');

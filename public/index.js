@@ -242,7 +242,7 @@ var _class$1 = function () {
   }, {
     key: 'instructions',
     get: function get() {
-      return '# Instructions\n' + 'Take the string below and return it in completely reverse order (as in ABC becomes CBA).\n' + ' > ' + this.bigString + '\n' + 'The string must be returned as a POST request with **one** key/value pair: answer=YOURANSWER';
+      return '# Instructions\n' + 'Take the string below and return it in completely reverse order (as in ABC becomes CBA).\n' + ' > ' + this.bigString + '\r\n' + '\n  ' + 'The string must be returned as a POST request with **one** key/value pair: answer=YOURANSWER';
     }
 
     /**

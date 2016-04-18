@@ -4,11 +4,13 @@ var path = require('path');
 var server = new neverDull.Server();
 var defaultModules = neverDull.getDefaultModules();
 
+console.log(defaultModules.SimpleReversing.instructions);
+
 var moduleNodes = [];
 var simpleSortingsModuleNode = neverDull.buildChallange(
   defaultModules.SimpleSortings,
   null // First module
-  );
+);
 moduleNodes.push(simpleSortingsModuleNode);
 
 var simpleReversingModuleNode = neverDull.buildChallange(

@@ -73,7 +73,7 @@ export default class {
   get instructions() {
     return '# Instructions\n' +
       'Take the string below and return it in completely reverse order (as in ABC becomes CBA).\n' +
-      ' > ' + this.bigString + '\n' +
+      ' > ' + this.bigString + '\r\n' + '\n  ' +
       'The string must be returned as a POST request with **one** key/value pair: answer=YOURANSWER';
   }
 

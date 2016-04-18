@@ -4,7 +4,7 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var _ = require('lodash');
 
-export default function (server, challanges) {
+export default function(server, challanges) {
 
   var upload = multer();
   server.use(bodyParser.json()); // For application/json

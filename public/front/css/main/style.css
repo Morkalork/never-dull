@@ -7,6 +7,7 @@ html {
   background-repeat: no-repeat;
   background-position: left top;
   background-size: cover;
+  background-attachment: fixed;
   color: #FFF;
   width: 100%;
   height: 100%;
@@ -37,4 +38,36 @@ body {
   border: 1px #FFF solid;
   box-shadow: 0 0 1em #FFF;
   display: block;
+}
+#popup {
+  width: 50%;
+  display: none;
+  border: 4px #000 solid;
+  background: #FFF;
+  padding: 1em;
+  box-shadow: 0 0 1em #000;
+  position: absolute;
+  color: #000;
+  text-align: center;
+}
+#popup #popup-header {
+  margin-bottom: 1em;
+  border-bottom: 1px #000 solid;
+}
+#popup #popup-close {
+  font-weight: bold;
+}
+#popup #popup-close a {
+  font-style: none;
+  color: #000;
+}
+#popup #popup-close a:hover {
+  color: #555;
+}
+#popup blockquote {
+  overflow: scroll;
+  background: #eaeaea;
+  margin: 1em;
+  padding: 0.5em;
+  max-height: 10em;
 }
