@@ -9,7 +9,6 @@ module.exports = function() {
       this.prependTo(this.paper);
     };
     elproto.toBack = function() {
-      console.log(this);
       this.appendTo(this.paper);
     };
   });

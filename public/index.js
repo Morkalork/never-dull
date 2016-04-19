@@ -342,7 +342,7 @@ var _class$3 = function () {
     value: function insertTeam(team) {
       var doc = {
         name: team.name,
-        currentPosition: team.currentPosition,
+        challange: team.challange,
         avatar: team.avatar,
         points: team.points
       };
@@ -365,6 +365,7 @@ var _class$3 = function () {
             reject(err);
           }
 
+          console.log('Found teams by ', selector);
           resolve(docs);
         });
       });
@@ -373,6 +374,11 @@ var _class$3 = function () {
     key: 'getTeamByName',
     value: function getTeamByName(name) {
       return this.getTeam({ name: name });
+    }
+  }, {
+    key: 'getTeamByChallange',
+    value: function getTeamByChallange(challange) {
+      return this.getTeam({ challange: challange });
     }
   }, {
     key: 'getTeams',
@@ -422,15 +428,22 @@ function addDefaultRoutes (server, modules) {
     db.insertTeam({
       name: req.body.name,
       avatar: req.body.avatar,
-      currentPosition: 0,
+      challange: '',
       points: req.body.points
     });
   });
 
-  server.get('/admin/teams', function (req, res) {
-    console.log('Get teams!');
+  server.get('/teams', function (req, res) {
     var db = new _class$3();
     db.getTeams().then(function (teams) {
+      res.json(teams);
+    }).catch(errorHandler);
+  });
+
+  server.get('/teams/challange', function (req, res) {
+    console.log(req.body);
+    var db = new _class$3();
+    db.getTeamByChallange(req.body.challange || '').then(function (teams) {
       res.json(teams);
     }).catch(errorHandler);
   });

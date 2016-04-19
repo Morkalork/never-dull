@@ -45,15 +45,24 @@ export default function(server, modules) {
     db.insertTeam({
       name: req.body.name,
       avatar: req.body.avatar,
-      currentPosition: 0,
+      challange: '',
       points: req.body.points
     });
   });
 
-  server.get('/admin/teams', (req, res) => {
-    console.log('Get teams!');
+  server.get('/teams', (req, res) => {
     var db = new DatabaseManager();
     db.getTeams()
+      .then(teams => {
+        res.json(teams);
+      })
+      .catch(errorHandler);
+  });
+
+  server.get('/teams/challange', (req, res) => {
+    console.log(req.body);
+    var db = new DatabaseManager();
+    db.getTeamByChallange(req.body.challange || '')
       .then(teams => {
         res.json(teams);
       })

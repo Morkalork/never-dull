@@ -62,7 +62,7 @@ export default class {
   insertTeam(team) {
     var doc = {
       name: team.name,
-      currentPosition: team.currentPosition,
+      challange: team.challange,
       avatar: team.avatar,
       points: team.points
     };
@@ -81,6 +81,7 @@ export default class {
           reject(err);
         }
 
+        console.log('Found teams by ', selector);
         resolve(docs);
       });
     });
@@ -88,6 +89,10 @@ export default class {
 
   getTeamByName(name) {
     return this.getTeam({ name: name });
+  }
+
+  getTeamByChallange(challange) {
+    return this.getTeam({ challange: challange });
   }
 
   getTeams() {

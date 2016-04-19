@@ -26306,7 +26306,6 @@ module.exports = function () {
       this.prependTo(this.paper);
     };
     elproto.toBack = function () {
-      console.log(this);
       this.appendTo(this.paper);
     };
   });
@@ -26318,6 +26317,21 @@ module.exports = function () {
 var Snap = require('snapsvg');
 var _ = require('lodash');
 var marked = require('marked');
+var Ajax = require('simple-ajax');
+
+function updateUserForChallange(snap, config, challange, func) {
+  var ajax = new Ajax({
+    url: '/teams/challange?challange=' + challange,
+    method: 'GET'
+  });
+
+  ajax.on('success', function (e, result) {
+    var teams = JSON.parse(result);
+    func(teams);
+  });
+
+  ajax.send();
+}
 
 function buildConfig() {
   var mainArea = document.getElementById('main-area');
@@ -26347,6 +26361,7 @@ function buildConfig() {
 }
 
 function reRender(snap, config) {
+
   snap.clear();
   var group = snap.g();
   _.forEach(config.elements.lines, function (line) {
@@ -26401,6 +26416,13 @@ function addStartSpot(snap, config) {
   config.elements.rectangles.push(start);
 
   addTextToRectangle(snap, config, start, 'Start', true);
+
+  updateUserForChallange(snap, config, '', function (teams) {
+    for (var i = 0; i < teams.length; i++) {
+      var team = teams[i];
+      console.log(team);
+    }
+  });
 }
 
 function addChallange(snap, config, challange, parent, startX, startY) {
@@ -26509,7 +26531,7 @@ module.exports = function (challanges) {
   reRender(snap, config);
 };
 
-},{"lodash":3,"marked":4,"snapsvg":7}],10:[function(require,module,exports){
+},{"lodash":3,"marked":4,"simple-ajax":6,"snapsvg":7}],10:[function(require,module,exports){
 'use strict';
 
 var Ajax = require('simple-ajax');

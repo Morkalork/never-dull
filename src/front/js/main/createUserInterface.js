@@ -3,6 +3,21 @@
 var Snap = require('snapsvg');
 var _ = require('lodash');
 var marked = require('marked');
+var Ajax = require('simple-ajax');
+
+function updateUserForChallange(snap, config, challange, func) {
+  var ajax = new Ajax({
+    url: '/teams/challange?challange=' + challange,
+    method: 'GET'
+  });
+
+  ajax.on('success', (e, result) => {
+    var teams = JSON.parse(result);
+    func(teams);
+  });
+
+  ajax.send();
+}
 
 function buildConfig() {
   var mainArea = document.getElementById('main-area');
@@ -32,6 +47,7 @@ function buildConfig() {
 }
 
 function reRender(snap, config) {
+
   snap.clear();
   var group = snap.g();
   _.forEach(config.elements.lines, line => {
@@ -91,6 +107,13 @@ function addStartSpot(snap, config) {
   config.elements.rectangles.push(start);
 
   addTextToRectangle(snap, config, start, 'Start', true);
+
+  updateUserForChallange(snap, config, '', teams => {
+    for (var i = 0; i < teams.length; i++) {
+      var team = teams[i];
+      console.log(team);
+    }
+  });
 }
 
 function addChallange(snap, config, challange, parent, startX, startY) {

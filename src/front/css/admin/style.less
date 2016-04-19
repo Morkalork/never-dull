@@ -14,8 +14,20 @@ html {
   width: 100%;
   height: 100%;
   header {
+    height: 19%;
+    width: 100%;
     text-align: center;
+    text-shadow: 0 0 1em #000;
   }
+  button {
+    padding: 0.5em 1em;
+  }
+}
+
+.clearfix:after {
+  content: "";
+  display: block;
+  clear: both;
 }
 
 #wrapper {
@@ -25,4 +37,29 @@ html {
   border: 4px #000 solid;
   background: rgba(255, 255, 255, 0.8);
   color: #000;
+  #scoreboard-area {
+    margin: 1em;
+    float: left;
+    #scoreboard {
+      list-style-type: disc;
+      margin-left: 1em;
+    }
+  }
+  #team-add {
+    float: left;
+    margin-left: 1em;
+    padding-left: 1em;
+    border-left: 2px #000 solid;
+  }
+  #solutions {
+    float: left;
+    margin-left: 1em;
+    padding-left: 1em;
+    border-left: 2px #000 solid;
+    #solution-list {
+      height: 8em;
+      width: 14em;
+      padding: 0.3em;
+    }
+  }
 }
