@@ -276,7 +276,7 @@ var _class$3 = function () {
   function _class() {
     babelHelpers.classCallCheck(this, _class);
 
-    // Challanges
+    // Challenges
 
     this.db = {};
     this.db.challanges = new Datastore({
@@ -298,8 +298,8 @@ var _class$3 = function () {
   }
 
   babelHelpers.createClass(_class, [{
-    key: 'insertChallange',
-    value: function insertChallange(challange) {
+    key: 'insertChallenge',
+    value: function insertChallenge(challange) {
       var module = challange.module;
       var doc = {
         parentId: challange.parent ? challange.parent.name : '',
@@ -313,8 +313,8 @@ var _class$3 = function () {
       this.db.challanges.insert(doc);
     }
   }, {
-    key: 'getChallanges',
-    value: function getChallanges(selector) {
+    key: 'getChallenges',
+    value: function getChallenges(selector) {
       var _this = this;
 
       return new Promise(function (resolve, reject) {
@@ -328,14 +328,14 @@ var _class$3 = function () {
       });
     }
   }, {
-    key: 'getAllChallanges',
-    value: function getAllChallanges() {
-      return this.getChallanges({});
+    key: 'getAllChallenges',
+    value: function getAllChallenges() {
+      return this.getChallenges({});
     }
   }, {
-    key: 'getChallangeByName',
-    value: function getChallangeByName(name) {
-      return this.getChallanges({ name: name });
+    key: 'getChallengeByName',
+    value: function getChallengeByName(name) {
+      return this.getChallenges({ name: name });
     }
   }, {
     key: 'insertTeam',
@@ -376,8 +376,8 @@ var _class$3 = function () {
       return this.getTeam({ name: name });
     }
   }, {
-    key: 'getTeamByChallange',
-    value: function getTeamByChallange(challange) {
+    key: 'getTeamByChallenge',
+    value: function getTeamByChallenge(challange) {
       return this.getTeam({ challange: challange });
     }
   }, {
@@ -401,18 +401,18 @@ function addDefaultRoutes (server, modules) {
     res.sendFile(path$1.join(__dirname + '/front/views/main.html'));
   });
 
-  server.get('/challanges', function (req, res, next) {
+  server.get('/challenges', function (req, res, next) {
     var db = new _class$3();
-    db.getAllChallanges().then(function (challanges) {
-      return res.json(challanges);
+    db.getAllChallenges().then(function (challenges) {
+      return res.json(challenges);
     }).catch(errorHandler);
   });
 
-  server.get('/challange', function (req, res) {
+  server.get('/challenge', function (req, res) {
     var db = new _class$3();
-    var challangeName = req.query.name;
-    db.getChallangeByName(challangeName).then(function (challange) {
-      res.json(challange);
+    var challengeName = req.query.name;
+    db.getChallengeByName(challengeName).then(function (challenge) {
+      res.json(challenge);
     }).catch(errorHandler);
   });
 
@@ -428,7 +428,7 @@ function addDefaultRoutes (server, modules) {
     db.insertTeam({
       name: req.body.name,
       avatar: req.body.avatar,
-      challange: '',
+      challenge: '',
       points: req.body.points
     });
   });
@@ -440,10 +440,10 @@ function addDefaultRoutes (server, modules) {
     }).catch(errorHandler);
   });
 
-  server.get('/teams/challange', function (req, res) {
+  server.get('/teams/challenge', function (req, res) {
     console.log(req.body);
     var db = new _class$3();
-    db.getTeamByChallange(req.body.challange || '').then(function (teams) {
+    db.getTeamByChallenge(req.body.challenge || '').then(function (teams) {
       res.json(teams);
     }).catch(errorHandler);
   });
@@ -451,19 +451,19 @@ function addDefaultRoutes (server, modules) {
 
 var _ = require('lodash');
 
-function persistChallanges (challanges, db) {
-  db.getAllChallanges().then(function (existingChallanges) {
-    _.forEach(challanges, function (challange) {
-      var exists = _.some(existingChallanges, function (x) {
-        return x.name === challange.module.name;
+function persistChallenges (challenges, db) {
+  db.getAllChallenges().then(function (existingChallenges) {
+    _.forEach(challenges, function (challenge) {
+      var exists = _.some(existingChallenges, function (x) {
+        return x.name === challenge.module.name;
       });
 
       if (exists) {
-        console.log(' -> Challange ' + challange.module.name + ' will not be persisted, ' + 'it already exists.');
+        console.log(' -> Challenge ' + challenge.module.name + ' will not be persisted, ' + 'it already exists.');
         return;
       }
 
-      db.insertChallange(challange);
+      db.insertChallenge(challenge);
     });
   });
 }
@@ -472,7 +472,7 @@ var bodyParser$1 = require('body-parser');
 var multer$1 = require('multer');
 var _$1 = require('lodash');
 
-function loadChallanges (server, challanges) {
+function loadChallenges (server, challenges) {
 
   var upload = multer$1();
   server.use(bodyParser$1.json()); // For application/json
@@ -480,8 +480,8 @@ function loadChallanges (server, challanges) {
     extended: true
   }));
 
-  _$1.forEach(challanges, function (challange) {
-    var module = challange.module;
+  _$1.forEach(challenges, function (challenge) {
+    var module = challenge.module;
     console.log(' -> Adding module ' + module.name);
 
     // We need to run the VERB calls in lambdas to avoid fucking up the context.
@@ -546,23 +546,23 @@ var _class$2 = function () {
      *  The nodes can create multiple paths of designed correctly and may contain various
      *  paths that the consumers may chose.
      *
-     *  @param {object[]} challanges - An array of challanges (<- good documentation!)
+     *  @param {object[]} challenges - An array of challenges (<- good documentation!)
      */
-    value: function launch(challanges) {
-      if (!challanges || challanges.length <= 0) {
+    value: function launch(challenges) {
+      if (!challenges || challenges.length <= 0) {
         throw new Error('No modules supplied, I cannot work without modules!');
       }
 
-      persistChallanges(challanges, this.db);
+      persistChallenges(challenges, this.db);
 
       var server = express();
       server.use(bodyParser.json());
       server.use(bodyParser.urlencoded({ extended: true }));
       setStaticContentPaths(server);
 
-      addDefaultRoutes(server, challanges);
+      addDefaultRoutes(server, challenges);
 
-      loadChallanges(server, challanges);
+      loadChallenges(server, challenges);
 
       var listener = server.listen(this.port, function (e) {
         var addressInfo = listener.address();
@@ -606,7 +606,7 @@ module.exports = {
       SimpleReversing: new _class$1()
     };
   },
-  buildChallange: function buildChallange(module, parent, children) {
+  buildChallenge: function buildChallenge(module, parent, children) {
     return new _class$4(module, parent, children);
   }
 };

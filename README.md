@@ -12,7 +12,7 @@ The server itself won't be very complex  and really only has two tasks; digest l
 A level should follow a very basic interface looking something like this:
 
 ```javascript
-export class IChallange {
+export class IChallenge {
   /** 
    *    @type   {string}    The name of the plugin, used as REST base (such as http://localhost/never-dull/NAME)
    */
@@ -29,13 +29,13 @@ export class IChallange {
   get instructions() {}
 
   /**
-   *    @type   {int}   The difficulty level of the challange on a scale of 1 to 10. 
+   *    @type   {int}   The difficulty level of the Challenge on a scale of 1 to 10. 
    *    Novice=1, Beginner=2, Basic=3, Medium=4, Hard=5, Tough=6, Very Hard=7, Insane=8, Extreme=9, Impossible=10
    */
   get difficulty() {}
 
   /**
-   *    @type   {string[]}  An array of (thought through) types to further describe this challange
+   *    @type   {string[]}  An array of (thought through) types to further describe this Challenge
    *    ex. Mathematical, String Parsing, Logical, Brute Force, Encoding, Graph Theory, etc
    */
   get type() {}

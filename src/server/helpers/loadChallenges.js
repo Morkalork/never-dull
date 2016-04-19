@@ -4,7 +4,7 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var _ = require('lodash');
 
-export default function(server, challanges) {
+export default function(server, challenges) {
 
   var upload = multer();
   server.use(bodyParser.json()); // For application/json
@@ -12,8 +12,8 @@ export default function(server, challanges) {
     extended: true
   }));
 
-  _.forEach(challanges, challange => {
-    var module = challange.module;
+  _.forEach(challenges, challenge => {
+    var module = challenge.module;
     console.log(' -> Adding module ' + module.name);
 
     // We need to run the VERB calls in lambdas to avoid fucking up the context.

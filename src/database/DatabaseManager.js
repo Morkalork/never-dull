@@ -4,7 +4,7 @@ var Datastore = require('nedb');
 
 export default class {
   constructor() {
-    // Challanges
+    // Challenges
 
     this.db = {};
     this.db.challanges = new Datastore({
@@ -25,7 +25,7 @@ export default class {
     });
   }
 
-  insertChallange(challange) {
+  insertChallenge(challange) {
     var module = challange.module;
     var doc = {
       parentId: (challange.parent) ? challange.parent.name : '',
@@ -39,7 +39,7 @@ export default class {
     this.db.challanges.insert(doc);
   }
 
-  getChallanges(selector) {
+  getChallenges(selector) {
     return new Promise((resolve, reject) => {
       this.db.challanges.find(selector, (err, docs) => {
         if (err) {
@@ -51,12 +51,12 @@ export default class {
     });
   }
 
-  getAllChallanges() {
-    return this.getChallanges({});
+  getAllChallenges() {
+    return this.getChallenges({});
   }
 
-  getChallangeByName(name) {
-    return this.getChallanges({ name: name });
+  getChallengeByName(name) {
+    return this.getChallenges({ name: name });
   }
 
   insertTeam(team) {
@@ -91,7 +91,7 @@ export default class {
     return this.getTeam({ name: name });
   }
 
-  getTeamByChallange(challange) {
+  getTeamByChallenge(challange) {
     return this.getTeam({ challange: challange });
   }
 

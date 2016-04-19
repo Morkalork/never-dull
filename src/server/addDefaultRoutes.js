@@ -16,19 +16,19 @@ export default function(server, modules) {
     res.sendFile(path.join(__dirname + '/front/views/main.html'));
   });
 
-  server.get('/challanges', (req, res, next) => {
+  server.get('/challenges', (req, res, next) => {
     var db = new DatabaseManager();
-    db.getAllChallanges()
-      .then(challanges => res.json(challanges))
+    db.getAllChallenges()
+      .then(challenges => res.json(challenges))
       .catch(errorHandler);
   });
 
-  server.get('/challange', (req, res) => {
+  server.get('/challenge', (req, res) => {
     var db = new DatabaseManager();
-    var challangeName = req.query.name;
-    db.getChallangeByName(challangeName)
-      .then(challange => {
-        res.json(challange);
+    var challengeName = req.query.name;
+    db.getChallengeByName(challengeName)
+      .then(challenge => {
+        res.json(challenge);
       })
       .catch(errorHandler);
   });
@@ -45,7 +45,7 @@ export default function(server, modules) {
     db.insertTeam({
       name: req.body.name,
       avatar: req.body.avatar,
-      challange: '',
+      challenge: '',
       points: req.body.points
     });
   });
@@ -59,10 +59,10 @@ export default function(server, modules) {
       .catch(errorHandler);
   });
 
-  server.get('/teams/challange', (req, res) => {
+  server.get('/teams/challenge', (req, res) => {
     console.log(req.body);
     var db = new DatabaseManager();
-    db.getTeamByChallange(req.body.challange || '')
+    db.getTeamByChallenge(req.body.challenge || '')
       .then(teams => {
         res.json(teams);
       })

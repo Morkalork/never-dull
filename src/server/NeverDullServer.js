@@ -7,8 +7,8 @@ var bodyParser = require('body-parser');
 
 import addDefaultRoutes from './addDefaultRoutes';
 import DatabaseManager from '../database/DatabaseManager';
-import persistChallanges from './helpers/persistChallanges';
-import loadChallanges from './helpers/loadChallanges';
+import persistChallenges from './helpers/persistChallenges';
+import loadChallenges from './helpers/loadChallenges';
 
 function setStaticContentPaths(server) {
   var jsPath = path.join(__dirname, '/front/js');
@@ -43,23 +43,23 @@ export default class {
    *  The nodes can create multiple paths of designed correctly and may contain various
    *  paths that the consumers may chose.
    *
-   *  @param {object[]} challanges - An array of challanges (<- good documentation!)
+   *  @param {object[]} challenges - An array of challenges (<- good documentation!)
    */
-  launch(challanges) {
-    if (!challanges || challanges.length <= 0) {
+  launch(challenges) {
+    if (!challenges || challenges.length <= 0) {
       throw new Error('No modules supplied, I cannot work without modules!');
     }
 
-    persistChallanges(challanges, this.db);
+    persistChallenges(challenges, this.db);
 
     var server = express();
     server.use(bodyParser.json());
     server.use(bodyParser.urlencoded({ extended: true }));
     setStaticContentPaths(server);
 
-    addDefaultRoutes(server, challanges);
+    addDefaultRoutes(server, challenges);
 
-    loadChallanges(server, challanges);
+    loadChallenges(server, challenges);
 
     var listener = server.listen(this.port, function(e) {
       var addressInfo = listener.address();
