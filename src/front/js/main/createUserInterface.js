@@ -5,9 +5,9 @@ var _ = require('lodash');
 var marked = require('marked');
 var Ajax = require('simple-ajax');
 
-function updateUserForChallange(snap, config, challange, func) {
+function updateUserForChallenge(snap, config, challenge, func) {
   var ajax = new Ajax({
-    url: '/teams/challange?challange=' + challange,
+    url: '/teams/challenge?challenge=' + challenge,
     method: 'GET'
   });
 
@@ -25,12 +25,12 @@ function buildConfig() {
   var generalSize = Math.round(svgSize.width / 20);
 
   return {
-    challanges: null,
+    challenges: null,
     svgWidth: svgSize.width,
     svgHeight: svgSize.height,
     svgCenterX: Math.round(svgSize.width / 2),
     svgCenterY: Math.round(svgSize.height / 2),
-    challangeSize: generalSize,
+    challengeSize: generalSize,
     startSize: Math.round(svgSize.width / 15),
     fontSize: Math.round((svgSize.width / 15) / 5),
     borderWidth: 4,
@@ -90,7 +90,7 @@ function addTextToRectangle(snap, config, rect, text, textInside) {
 function addStartSpot(snap, config) {
 
   var halfSize = Math.round(config.startSize / 2);
-  var rectX = config.challangeSize;
+  var rectX = config.challengeSize;
   var rectY = config.svgCenterY - halfSize;
 
   var start = snap.rect(rectX, rectY, config.startSize, config.startSize, 10)
@@ -108,7 +108,7 @@ function addStartSpot(snap, config) {
 
   addTextToRectangle(snap, config, start, 'Start', true);
 
-  updateUserForChallange(snap, config, '', teams => {
+  updateUserForChallenge(snap, config, '', teams => {
     for (var i = 0; i < teams.length; i++) {
       var team = teams[i];
       console.log(team);
@@ -116,8 +116,8 @@ function addStartSpot(snap, config) {
   });
 }
 
-function addChallange(snap, config, challange, parent, startX, startY) {
-  var rect = snap.rect(startX, startY, config.challangeSize, config.challangeSize)
+function addChallenge(snap, config, challenge, parent, startX, startY) {
+  var rect = snap.rect(startX, startY, config.challengeSize, config.challengeSize)
     .attr({
       stroke: '#000',
       strokeWidth: config.borderWidth,
@@ -148,17 +148,17 @@ function addChallange(snap, config, challange, parent, startX, startY) {
     popup.style.display = 'block';
 
     var urlLink = document.getElementById('popup-link');
-    var url = window.location.href + challange.name;
+    var url = window.location.href + challenge.name;
     url = url.replace('#', ''); // Just in case, y'know...
     urlLink.setAttribute('href', url);
     urlLink.innerHTML = url;
-    document.getElementById('popup-header').innerHTML = challange.name;
-    document.getElementById('popup-description').innerHTML = marked(challange.description);
-    document.getElementById('popup-instructions').innerHTML = marked(challange.instructions);
+    document.getElementById('popup-header').innerHTML = challenge.name;
+    document.getElementById('popup-description').innerHTML = marked(challenge.description);
+    document.getElementById('popup-instructions').innerHTML = marked(challenge.instructions);
   });
 
   config.elements.rectangles.push(rect);
-  addTextToRectangle(snap, config, rect, challange.name);
+  addTextToRectangle(snap, config, rect, challenge.name);
 
   var lineX1 = parent.getBBox().cx;
   var lineY1 = parent.getBBox().cy;
@@ -172,26 +172,26 @@ function addChallange(snap, config, challange, parent, startX, startY) {
   line.toBack();
   config.elements.lines.push(line);
 
-  _.forEach(config.challanges, c => {
-    if (c.parentId === challange.name) {
+  _.forEach(config.challenges, c => {
+    if (c.parentId === challenge.name) {
       var nextStartX = startX + config.lengthBetween;
-      addChallange(snap, config, c, rect, nextStartX, startY);
+      addChallenge(snap, config, c, rect, nextStartX, startY);
     }
   });
 }
 
-function addChallanges(snap, config, challanges, parent, yLevel) {
+function addChallenges(snap, config, challenges, parent, yLevel) {
 
-  var standardLineLength = Math.round(config.challangeSize * 2.5);
+  var standardLineLength = Math.round(config.challengeSize * 2.5);
   var parentBBox = parent.getBBox();
-  _.forEach(starterChallanges, starterChallange => {
+  _.forEach(starterChallenges, starterChallenge => {
     var startX = parentBBox.x2;
     var startY = yLevel;
 
-    addChallange(
+    addChallenge(
       snap,
       config,
-      starterChallange,
+      starterChallenge,
       parent,
       startX,
       startY);
@@ -200,7 +200,7 @@ function addChallanges(snap, config, challanges, parent, yLevel) {
   });
 }
 
-module.exports = function(challanges) {
+module.exports = function(challenges) {
 
   //Bind popup close link
   document.getElementById('popup-close-link').addEventListener('click', () => {
@@ -209,21 +209,21 @@ module.exports = function(challanges) {
   });
 
   var config = buildConfig();
-  config.challanges = challanges;
+  config.challenges = challenges;
   var snap = Snap('#main-area');
 
   addStartSpot(snap, config);
 
-  var starterChallangesFounder = 0;
+  var starterChallengesFounder = 0;
   var startY = config.content.start.getBBox().cy;
-  var starterChallanges = _.filter(challanges, challange => {
-    if (!challange.parentId) {
+  var starterChallenges = _.filter(challenges, challenge => {
+    if (!challenge.parentId) {
       var x = config.lengthBetween;
       var y = startY;
-      if (challange === 1) y = Math.round(startY / 2);
-      if (challange === 2) y = Math.round(startY / 2) + startY;
+      if (challenge === 1) y = Math.round(startY / 2);
+      if (challenge === 2) y = Math.round(startY / 2) + startY;
 
-      addChallange(snap, config, challange, config.content.start, x, y);
+      addChallenge(snap, config, challenge, config.content.start, x, y);
     }
   });
 

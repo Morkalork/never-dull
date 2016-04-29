@@ -5,7 +5,7 @@ var createUserInterface = require('./createUserInterface');
 var Plugins = require('../Plugins');
 
 function loadChallanges() {
-  var url = '/challanges';
+  var url = '/challenges';
   var request = new Ajax({
     url: url,
     method: 'GET',
