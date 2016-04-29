@@ -16,7 +16,6 @@ export default function(server, modules) {
   });
 
   server.get('/challenges', (req, res) => {
-    console.log('Fetching challanges');
     var db = new DatabaseManager();
     db.getAllChallenges()
       .then(challenges => res.json(challenges))
